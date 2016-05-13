@@ -3,6 +3,11 @@ require 'serverspec'
 require 'fileutils'
 require 'shellwords'
 require 'json'
+require "rspec/wait"
+
+GRAFANA_VERSION=ENV['GRAFANA_VERSION'] || "latest"
+GRAFANA_IMAGE_REPO=ENV['GRAFANA_IMAGE_REPO'] || 'grafana-interface-spec'
+GRAFANA_IMAGE_TAG=ENV['GRAFANA_IMAGE_TAG'] || 'local-build'
 
 describe "Dockerfile" do
   before(:all) do
@@ -15,6 +20,8 @@ describe "Dockerfile" do
     build_args = {
     }
     @image = Docker::Image.build_from_dir('build', {"buildargs" => JSON.generate(build_args)})
+    @image.tag(:repo => GRAFANA_IMAGE_REPO, :tag => GRAFANA_IMAGE_TAG, :force=> true)
+    @image.tag(:repo => GRAFANA_IMAGE_REPO, :tag => GRAFANA_VERSION, :force=> true)
   end
 
   describe "#filesystem" do
