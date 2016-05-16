@@ -1,4 +1,11 @@
 FROM grafana/grafana
 MAINTAINER Kiru "kirusamapathy"
+RUN apt-get update && \
+    apt-get -y --no-install-recommends install curl supervisor
+COPY etc/. /etc/
 COPY defaults.ini /usr/share/grafana/conf/
 COPY dashboards/. /var/lib/grafana/dashboards/
+COPY scripts/. /usr/share/grafana/scripts/
+RUN chmod 744 /usr/share/grafana/scripts/*
+COPY go /go
+ENTRYPOINT ["/go","start"]
