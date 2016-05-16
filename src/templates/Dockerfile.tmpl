@@ -1,5 +1,6 @@
 FROM grafana/grafana
 MAINTAINER Kiru "kirusamapathy"
+EXPOSE 3000
 RUN apt-get update && \
     apt-get -y --no-install-recommends install curl supervisor
 COPY etc/. /etc/
