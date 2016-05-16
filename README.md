@@ -24,6 +24,9 @@ This is an attempt to run Grafana as Docker container.
     * Runs the unit tests
     * Produces a Docker image
 
+  * ./go build
+    * Build the Docker image
+
 ### Publish
 
 
