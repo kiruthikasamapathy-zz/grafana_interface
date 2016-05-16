@@ -13,10 +13,12 @@ describe "Dockerfile" do
   before(:all) do
     FileUtils.rm_r("build") if Pathname("build").exist?
     FileUtils.mkdir_p("build")
-    FileUtils.copy_file("src/templates/Dockerfile.tmpl", "build/Dockerfile")
 
+    FileUtils.copy_file("src/templates/Dockerfile.tmpl", "build/Dockerfile")
+    FileUtils.cp_r("src/bash/.", "build/.", :preserve=>true)
     FileUtils.cp_r("src/config/.", "build/.", :preserve=>true)
     FileUtils.cp_r("src/dashboards/", "build/.", :preserve=>true)
+    FileUtils.cp_r("src/scripts/", "build/.", :preserve=>true)
     build_args = {
     }
     @image = Docker::Image.build_from_dir('build', {"buildargs" => JSON.generate(build_args)})
@@ -59,6 +61,18 @@ describe "Dockerfile" do
     describe file ('/var/lib/grafana/dashboards/spog.json') do
       it {should be_file }
     end
+
+    describe file ('/usr/share/grafana/scripts/add_influxdb.sh') do
+      it {should be_file }
+    end
+
+    describe file ('/usr/share/grafana/scripts/add_influxdb.sh') do
+      it { should be_executable }
+    end
+
+    describe file ('/etc/supervisord.conf') do
+     it {should be_file }
+   end
   end
 
   describe 'Dockerfile#running' do
@@ -67,7 +81,6 @@ describe "Dockerfile" do
       @running_container = Docker::Container.create(
       'Image'=>@image.id)
       @running_container.start( :detach => true )
-      # puts @running_container.json
       set :backend, :docker
       set :os, :family => 'redhat', :release => 7
       set :docker_image, nil
