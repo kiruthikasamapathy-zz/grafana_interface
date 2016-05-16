@@ -1,0 +1,11 @@
+#! /usr/bin/env bash
+
+while [[ $# -gt 0 ]] ;
+do
+  opt="$1";
+  shift;              #expose next argument
+  case $opt in
+    start) supervisord -c /etc/supervisord.conf;;
+    *) echo "Unknown arg: $opt"; exit 1;;
+  esac
+done
