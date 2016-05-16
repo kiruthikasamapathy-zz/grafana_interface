@@ -9,7 +9,7 @@ PROJECT=
 ifdef bamboo_working_directory
 MOUNT_DIR = $(bamboo_working_directory)
 else
-MOUNT_DIR = $ (PWD)
+MOUNT_DIR = $(PWD)
 endif
 
 all: test image publish
@@ -31,8 +31,10 @@ test: copy
 	bundle exec rspec --format documentation
 
 dev: copy test
-	@echo "Spinning up the Grafana Docker container locally"
-	@docker run -p 3000:3000 -v ${MOUNT_DIR}/src/dashboards/:/var/lib/grafana/dashboards/ grafana-interface-spec:latest
+	@echo "Spinning up the Grafana Docker container locally named grafana-interface-dev"
+	@docker stop grafana-interface-dev || echo 'Dev container is not running'
+	@docker rm grafana-interface-dev || echo 'Dev container is not running'
+	@docker run -d --name grafana-interface-dev -p 3000:3000 -v ${MOUNT_DIR}/src/dashboards/:/var/lib/grafana/dashboards/ grafana-interface-spec:latest
 	@echo "Open Grafana dashboard @ http://localhost:3000"
 
 image: copy
