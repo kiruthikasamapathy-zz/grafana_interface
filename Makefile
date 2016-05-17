@@ -1,10 +1,10 @@
 # MAINTAINER Kiru Samapathy
 
 # Project name
-ORG=
-REGISTRY=
-PROJECT_GROUP=
-PROJECT=
+ORG=org
+REGISTRY=local
+PROJECT_GROUP=group
+PROJECT=project
 
 ifdef bamboo_working_directory
 MOUNT_DIR = $(bamboo_working_directory)
@@ -25,6 +25,13 @@ copy: clean
 	cp -r src/dashboards build/.
 	cp -r src/scripts build/.
 
+test-ci:
+	@docker run --rm \
+		-v /var/run/docker.sock:/var/run/docker.sock
+		-v ${MOUNT_DIR}:/workspace \
+		 ruby \
+		 make -C workspace/ test
+
 test: copy
 	@echo "Installing dependent gems and running spec"
 	bundle install
@@ -38,13 +45,13 @@ dev: copy test
 	@echo "Open Grafana dashboard @ http://localhost:3000"
 
 image: copy
-	@echo "$(INFO) Preparing Docker image for grafana_interface"
+	@echo "$(ORG) Preparing Docker image for grafana_interface"
 	@docker build -t $(ORG)/$(PROJECT) build/
 
 publish:
 	@echo "Publishing image to $(ORG) registry "
 	@docker tag $(ORG)/$(PROJECT) $(REGISTRY)/$(PROJECT_GROUP)/$(PROJECT)
 	@docker login -u $(bamboo_DOCKER_USER) -p $(bamboo_DOCKER_PASSWORD)
-	@docker push $(PROJECT_GROUP)/$(PROJECT)
+	@docker push $(REGISTRY)/$(PROJECT_GROUP)/$(PROJECT)
 
 .PHONY: all clean copy test image publish
