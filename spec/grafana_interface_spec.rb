@@ -8,7 +8,7 @@ require "rspec/wait"
 GRAFANA_VERSION=ENV['GRAFANA_VERSION'] || "latest"
 GRAFANA_IMAGE_REPO=ENV['GRAFANA_IMAGE_REPO'] || 'grafana-interface-spec'
 GRAFANA_IMAGE_TAG=ENV['GRAFANA_IMAGE_TAG'] || 'local-build'
-DEPLOY_ENVIRONMENT=ENV['DEPLOY_ENVIRONMENT'] || 'dev'
+DEPLOY_ENVIRONMENT=ENV['DEPLOY_ENVIRONMENT'] || 'local'
 
 describe "Dockerfile" do
   before(:all) do
