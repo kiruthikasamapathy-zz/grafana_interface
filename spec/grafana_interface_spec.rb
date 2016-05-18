@@ -8,18 +8,12 @@ require "rspec/wait"
 GRAFANA_VERSION=ENV['GRAFANA_VERSION'] || "latest"
 GRAFANA_IMAGE_REPO=ENV['GRAFANA_IMAGE_REPO'] || 'grafana-interface-spec'
 GRAFANA_IMAGE_TAG=ENV['GRAFANA_IMAGE_TAG'] || 'local-build'
+DEPLOY_ENVIRONMENT=ENV['DEPLOY_ENVIRONMENT'] || 'dev'
 
 describe "Dockerfile" do
   before(:all) do
-    FileUtils.rm_r("build") if Pathname("build").exist?
-    FileUtils.mkdir_p("build")
-
-    FileUtils.copy_file("src/templates/Dockerfile.tmpl", "build/Dockerfile")
-    FileUtils.cp_r("src/bash/.", "build/.", :preserve=>true)
-    FileUtils.cp_r("src/config/.", "build/.", :preserve=>true)
-    FileUtils.cp_r("src/dashboards/", "build/.", :preserve=>true)
-    FileUtils.cp_r("src/scripts/", "build/.", :preserve=>true)
     build_args = {
+      'DEPLOY_ENVIRONMENT' => "#{DEPLOY_ENVIRONMENT}"
     }
     @image = Docker::Image.build_from_dir('build', {"buildargs" => JSON.generate(build_args)})
     @image.tag(:repo => GRAFANA_IMAGE_REPO, :tag => GRAFANA_IMAGE_TAG, :force=> true)

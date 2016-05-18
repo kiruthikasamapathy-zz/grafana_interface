@@ -43,10 +43,11 @@ dev: copy test
 	@docker rm grafana-interface-dev || echo 'Dev container is not running'
 	@docker run -d --name grafana-interface-dev -p 3000:3000 -v ${MOUNT_DIR}/src/dashboards/:/var/lib/grafana/dashboards/ grafana-interface-spec:latest
 	@echo "Open Grafana dashboard @ http://localhost:3000"
+	docker exec -ti grafana-interface-dev /bin/bash
 
 image: copy
 	@echo "$(ORG) Preparing Docker image for grafana_interface"
-	@docker build -t $(ORG)/$(PROJECT) build/
+	@docker build --build-arg DEPLOY_ENVIRONMENT=$(BAMBOO_DEPLOY_ENVIRONMENT) -t $(ORG)/$(PROJECT) build/
 
 publish:
 	@echo "Publishing image to $(ORG) registry "
