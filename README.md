@@ -1,36 +1,59 @@
 # Grafana as Docker container
 
-This is an attempt to run Grafana as Docker container.
+Runs Grafana dashboard as a Docker container. 
+It includes the precanned dashboard configurations and add configuration to connect to InfluxDB during start up.
+
+## [CI]
 
 ## Custodian
 
+## Prerequisites
+
 ## Local Development
+
+  * `make dev`
+
+    * Runs the unit tests
+    * Builds the Docker image locally
+    * Starts a container based on the image
+    * Open the [dashboard](http://localhost:3000)
+    * If using VM/docker-machine use the corresponding host in place of localhost
+
+#### Adding new dashboard
+
+  * Add new dashboard
+  * Export dashboard to json format
+  * Copy the json file to src/dashboards/
+
+#### Edit exising dashboard
+
+  * Open the Grafana dashboard
+  * 'Save as' exising dashboard (the ones rendered based on json) to new dashboard
+  * Do your changes
+  * Export to json
+  * Replace the exising json file at /src/dashboards/
 
 ## Testing
 
-  * `./go install spec`
+  * `make test`
 
-  * Uses Serverspec to run the unit tests
-  * Builds a Docker image
+    * Uses Serverspec to run the unit tests
+    * Builds a Docker image
     * Deployable as a Docker container
     * Includes the precanned dashboard configurations
-  * [Build pipeline]: TBD
 
-## How might I use this?
+## Build
 
-### Build and Spec
-* You will need an environment with Ruby, Docker and docker-api support
-  * ./go install spec
-    * Runs the unit tests
-    * Produces a Docker image
+  * `make test`
 
-  * ./go build
-    * Build the Docker image
+## Publish
 
-### Publish
+  * `make publish`
 
+## Deploy
 
-### Deploy
+#### Caveats
 
+  * The repository has to be created before we can push to private Docker registry
 
 ## References
